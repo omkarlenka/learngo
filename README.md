@@ -7,8 +7,6 @@ Features:
 - Tasks are stored in disk
 
 
-
-
 TBD:
 ----
 - Change task priorities
