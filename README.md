@@ -4,6 +4,9 @@ Features:
 ---------
 - Add tasks
 - Mark Tasks as done
+- Tasks are stored in disk
+
+
 
 
 TBD:
