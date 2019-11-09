@@ -8,13 +8,7 @@ Features:
 
 Commands:
 --------------
-Usage of task:
--add string
-Add a task
--done int
-Enter Task Numer to be deleted
--doneall
-Mark all tasks as done
+<img width="499" alt="Screenshot 2019-11-03 at 11 49 56 PM" src="https://user-images.githubusercontent.com/4930493/68534191-5ddca200-0357-11ea-98cd-135edb832740.png">
 
 
 TBD:
