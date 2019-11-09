@@ -4,7 +4,7 @@ Features:
 ---------
 - Add tasks
 - Mark Tasks as done (Individual or all tasks)
-- Tasks are stored in disk
+- Added tasks are persistent on system reboots (stored in disk) 
 
 
 TBD:
