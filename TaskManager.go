@@ -21,7 +21,7 @@ func logFatalError(err error){
 }
 
 func main(){
-	db,err := sql.Open("mysql","root:omkar@123@tcp(127.0.0.1:3306)/taskdb")
+	db,err := sql.Open("mysql","user@pass@tcp(127.0.0.1:3306)/taskdb")
 	logFatalError(err)
 
 	//DB Query
