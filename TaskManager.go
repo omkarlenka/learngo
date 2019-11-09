@@ -21,7 +21,7 @@ func logFatalError(err error){
 }
 
 func main(){
-	db,err := sql.Open("mysql","user:pass@tcp(127.0.0.1:3306)/taskdb")
+	db,err := sql.Open("mysql","root:omkar@123@tcp(127.0.0.1:3306)/taskdb")
 	logFatalError(err)
 
 	//DB Query
@@ -36,6 +36,7 @@ func main(){
 	var selectQuery = "SELECT id,name from tasks"
 	var truncateQuery = "TRUNCATE TABLE tasks"
 	var existsQuery = "SELECT EXISTS (SELECT 1 FROM tasks)"
+	var deleteAllQuery = "DELETE from tasks"
 
 	_,err = db.Exec(createDbQuery)
 	logFatalError(err)
@@ -46,6 +47,7 @@ func main(){
 	// Parse input Flags
 	addPtr := flag.String("add","","Add a task");
 	deletePtr := flag.Int("done",0,"Enter Task Numer to be deleted");
+	deleteAllPtr := flag.Bool("doneall",false,"Mark all tasks as done")
 
 	flag.Parse()
 
@@ -73,7 +75,9 @@ func main(){
 		if !exists{
 			_,err = db.Exec(truncateQuery)
 		}
-
+	}else if(*deleteAllPtr == true){
+		_,err = db.Exec(deleteAllQuery)
+		logFatalError(err)
 	}else{
 		rows, err := db.Query(selectQuery)
 		logFatalError(err)
