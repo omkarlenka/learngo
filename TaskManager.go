@@ -93,14 +93,11 @@ func swapPriority(id1 int, id2 int){
 	}
 
 	_,err = db.Exec(deleteQuery + strconv.Itoa(id1))
-	fmt.Println("HERE 3")
 	logFatalError(err)
 
 	_,err = db.Exec(deleteQuery + strconv.Itoa(id2))
-	fmt.Println("HERE 4")
 	logFatalError(err)
 
-	fmt.Println(insertAllQuery + "(" + strconv.Itoa(id1) + ",\"" + name2 + "\")")
 	_,err = db.Exec(insertAllQuery + "(" + strconv.Itoa(id1) + ",\"" + name2 + "\")")
 	logFatalError(err)
 
