@@ -8,35 +8,13 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"database/sql"
 	"os"
-	// "strings"
+	"strings"
 	// "errors"
 )
 
 type task struct{
 	id int
 	name string
-}
-
-type intArray []int
-
-func (i *intArray) Set(value string) error {
-    fmt.Println(value)
-	
-	// if len(*i) > 0 {
-	// 	return errors.New("swap flag already set")
-	// }
-	// for _, id := range strings.Split(value, ",") {
-	// 	duration, err := time.ParseDuration(dt)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	*i = append(*i, duration)
-	// }
-	return nil
-}
-
-func (i *intArray) String() string {
-    return ""
 }
 
 var db *sql.DB
@@ -59,7 +37,7 @@ var truncateQuery = "TRUNCATE TABLE tasks"
 var existsQuery = "SELECT EXISTS (SELECT 1 FROM tasks)"
 var deleteAllQuery = "DELETE from tasks"
 var selectIDQuery = "SELECT id from tasks"
-var selectNameQuery = "SELECT name fro tasks WHERE id="
+var selectNameQuery = "SELECT name from tasks WHERE id="
 
 func init(){
 	db,err = sql.Open("mysql","root:omkar@123@tcp(127.0.0.1:3306)/")
@@ -97,34 +75,36 @@ func init(){
 }
 
 func swapPriority(id1 int, id2 int){
-	rows1, err := db.Query(selectNameQuery + strconv.Itoa(id1))
-	logFatalError(err)
-	rows2, err := db.Query(selectNameQuery + strconv.Itoa(id2))
-	logFatalError(err)
-
 	var name1 string
 	var name2 string
 
+	rows1, err := db.Query(selectNameQuery + strconv.Itoa(id1))
+	logFatalError(err)
 	for rows1.Next(){
 		err := rows1.Scan(&name1)
 		logFatalError(err)
 	}
 
+	rows2, err := db.Query(selectNameQuery + strconv.Itoa(id2))
+	logFatalError(err)
 	for rows2.Next(){
 		err := rows2.Scan(&name2)
 		logFatalError(err)
 	}
 
 	_,err = db.Exec(deleteQuery + strconv.Itoa(id1))
+	fmt.Println("HERE 3")
 	logFatalError(err)
 
 	_,err = db.Exec(deleteQuery + strconv.Itoa(id2))
+	fmt.Println("HERE 4")
 	logFatalError(err)
 
-	_,err = db.Exec(insertQuery + "(\"" + strconv.Itoa(id1) + "," + name2 + "\")")
+	fmt.Println(insertAllQuery + "(" + strconv.Itoa(id1) + ",\"" + name2 + "\")")
+	_,err = db.Exec(insertAllQuery + "(" + strconv.Itoa(id1) + ",\"" + name2 + "\")")
 	logFatalError(err)
 
-	_,err = db.Exec(insertQuery + "(\"" + strconv.Itoa(id2) + "," + name1 + "\")")
+	_,err = db.Exec(insertAllQuery + "(" + strconv.Itoa(id2) + ",\"" + name1 + "\")")
 	logFatalError(err)
 }
 
@@ -137,11 +117,10 @@ func logFatalError(err error){
 
 func main(){
 	// Parse input Flags
-	var swapList intArray
 	addPtr := flag.String("add","","Add a task");
 	deletePtr := flag.Int("done",0,"Enter Task Numer to be deleted");
 	deleteAllPtr := flag.Bool("doneall",false,"Mark all tasks as done")
-	flag.Var(&swapList, "swap", "Enter the task numbers to be swapped")
+	swapPtr := flag.String("swap", "", "Enter the comma separated task numbers to be swapped")
 
 	flag.Parse()
 
@@ -174,24 +153,24 @@ func main(){
 
 		_,err = db.Exec(truncateQuery)
 		logFatalError(err)
-	} else if (len(swapList) != 0){
-		// fmt.Println(swapList)
-		// // s := strings.Split(*swapPtr, " ")
-		// // if(len(s)>2){
-		// // 	os.Exit(1)
-		// //}
+	} else if (len(*swapPtr) != 0){
+		
+		s := strings.Split(*swapPtr, ",")
+		if(len(s)>2){
+			os.Exit(1)
+		}
 
-		// id1,err := strconv.Atoi(s[0])
-		// if(err != nil){
-		// 	os.Exit(1)
-		// }
+		id1,err := strconv.Atoi(s[0])
+		if(err != nil){
+			os.Exit(1)
+		}
 
-		// id2,err := strconv.Atoi(s[1])
-		// if(err != nil){
-		// 	os.Exit(1)
-		// }
+		id2,err := strconv.Atoi(s[1])
+		if(err != nil){
+			os.Exit(1)
+		}
 
-		// swapPriority(priorityToId[id1], priorityToId[id2])
+		swapPriority(priorityToId[id1], priorityToId[id2])
 	}else{
 		rows, err := db.Query(selectQuery)
 		logFatalError(err)
